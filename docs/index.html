@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FearW Hermés Agent 安裝指南</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3a;
+      --accent: #7c6af7;
+      --accent2: #f7a86a;
+      --text: #e4e4e7;
+      --muted: #71717a;
+      --green: #4ade80;
+      --red: #f87171;
+      --yellow: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero {
+      background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 12px; }
+    .hero .subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 24px; }
+    .badge { display: inline-block; background: var(--accent); color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; margin: 4px; }
+    .badge.orange { background: var(--accent2); }
+    .badge.green { background: var(--green); color: #000; }
+
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    nav li a {
+      display: block;
+      padding: 14px 18px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav li a:hover, nav li a.active { color: var(--text); text-decoration: none; }
+    nav li a.active { border-bottom: 2px solid var(--accent); }
+
+    main { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+    h2 { font-size: 1.6rem; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 1.2rem; margin: 24px 0 10px; color: var(--accent2); }
+    h4 { font-size: 1rem; margin: 16px 0 8px; color: var(--text); }
+
+    p { margin-bottom: 12px; }
+    ul, ol { margin: 0 0 12px 24px; }
+    li { margin-bottom: 6px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .card h3 { margin-top: 0; }
+
+    .cmd {
+      background: #0a0a0f;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-family: 'Fira Code', 'SF Mono', Menlo, monospace;
+      font-size: 0.88rem;
+      overflow-x: auto;
+      margin: 12px 0;
+      color: var(--green);
+    }
+    .cmd .comment { color: var(--muted); }
+    .cmd .var { color: var(--accent2); }
+    .cmd .flag { color: var(--yellow); }
+
+    .warning {
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 0.92rem;
+    }
+    .warning::before { content: '⚠️ '; }
+
+    .info {
+      background: rgba(124, 106, 247, 0.08);
+      border: 1px solid rgba(124, 106, 247, 0.3);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 0.92rem;
+    }
+    .info::before { content: 'ℹ️ '; }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .step-content { flex: 1; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    th, td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--surface); color: var(--accent2); }
+    tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+    footer { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 60px; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🤖 FearW Hermés Agent</h1>
+  <p class="subtitle">macOS 完整安裝指南 — CPA 路由 · Telegram 接入 · 終端命令</p>
+  <div>
+    <span class="badge">Hermés Agent FearW Fork</span>
+    <span class="badge orange">CLIProxyAPI (CPA)</span>
+    <span class="badge green">macOS</span>
+  </div>
+</div>
+
+<nav>
+  <ul>
+    <li><a href="index.html" class="active">首頁</a></li>
+    <li><a href="cpa/index.html">CPA 安裝</a></li>
+    <li><a href="setup/index.html">FearW 安裝</a></li>
+    <li><a href="telegram/index.html">Telegram 接入</a></li>
+    <li><a href="advanced/index.html">進階設定</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<h2 id="intro">這份指南解決什麼？</h2>
+
+<div class="card">
+  <h3>🧭 架構總覽</h3>
+  <p>FearW 是 Hermés Agent 的 Fork，專為 <strong>CPA（CLIProxyAPI）</strong> 路由架構設計。所有 AI 模型流量都經過 CPA 代理：</p>
+  <pre class="cmd">你的指令 → Hermés Agent (FearW) → CPA (8080) → OpenAI / OpenRouter / MiniMax / ...</pre>
+  <p>CPA 同時充當 <strong>管理介面</strong>，可以在一個介面裡管理多個 API Key 和多個 Provider。</p>
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <h3>📦 需要安裝什麼</h3>
+    <ol>
+      <li><strong>CPA</strong> — CLIProxyAPI（路由、管理）</li>
+      <li><strong>FearW</strong> — Hermés Agent 本體</li>
+      <li><strong>VOICEVOX</strong>（可選）— 日語 TTS</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>⚡ 快速前提</h3>
+    <ul>
+      <li>macOS（已測試）</li>
+      <li>Python 3.11+</li>
+      <li>Git</li>
+      <li>API Key（不提供，需自行申請）</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="toc">目錄</h2>
+
+<table>
+  <tr><td><a href="cpa/index.html"><strong>1. CPA 安裝與配置</strong></a></td><td>CLIProxyAPI 管理介面、Provider 設定、API Key 管理</td></tr>
+  <tr><td><a href="setup/index.html"><strong>2. FearW 安裝</strong></a></td><td>Clone、依賴、初始化、Profile 設定</td></tr>
+  <tr><td><a href="telegram/index.html"><strong>3. Telegram 接入</strong></a></td><td>Bot Token、Gateway 設定、對話綁定</td></tr>
+  <tr><td><a href="advanced/index.html"><strong>4. 進階設定</strong></a></td><td>非標準端口、/fearw 終端命令、多 Profile、FreeRouter</td></tr>
+</table>
+
+<h2 id="faq">常見問題</h2>
+
+<div class="card">
+  <h3>Q: CPA 和 FearW 是分開的嗎？</h3>
+  <p>是的。CPA 是一個獨立的 OpenAI-compatible proxy 伺服器（預設 port 8080），FearW 把它當作上遊 AI API。兩者独立運行，CPA 重啟不影響 FearW，反之亦然。</p>
+</div>
+
+<div class="card">
+  <h3>Q: 現有的 Hermés Agent（NousResearch 原版）還能用嗎？</h3>
+  <p>可以。兩者可以同時運行，使用不同 port 和 Profile，不會衝突。FearW 只走 CPA；原版 Hermés 可以直接連 Provider。</p>
+</div>
+
+<div class="card">
+  <h3>Q: 我的 API Key 放在哪裡？</h3>
+  <p>放在 CPA 的認證目錄（<code>~/.cli-proxy-api/</code>），FearW 完全不接觸原始 Key。CPA 管理介面（<code>:8080/management</code>）可以安全地新增、刪除、測試 Key。</p>
+</div>
+
+</main>
+
+<footer>
+  <p>FearW Hermés Agent 安裝指南 · 持續更新</p>
+</footer>
+
+</body>
+</html>

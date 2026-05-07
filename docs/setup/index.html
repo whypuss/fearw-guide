@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FearW 安裝 — FearW 指南</title>
+  <style>
+    :root { --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3a; --accent: #7c6af7; --accent2: #f7a86a; --text: #e4e4e7; --muted: #71717a; --green: #4ade80; --red: #f87171; --yellow: #fbbf24; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; position: sticky; top: 0; z-index: 100; }
+    nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0; max-width: 900px; margin: 0 auto; }
+    nav li a { display: block; padding: 14px 18px; color: var(--muted); font-size: 0.9rem; }
+    nav li a:hover, nav li a.active { color: var(--text); text-decoration: none; }
+    nav li a.active { border-bottom: 2px solid var(--accent); }
+    main { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    h2 { font-size: 1.6rem; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 1.2rem; margin: 24px 0 10px; color: var(--accent2); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 20px 0; }
+    .card h3 { margin-top: 0; }
+    .cmd { background: #0a0a0f; border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; font-family: 'Fira Code', monospace; font-size: 0.88rem; overflow-x: auto; margin: 12px 0; color: var(--green); white-space: pre; }
+    .cmd .comment { color: var(--muted); }
+    .cmd .var { color: var(--accent2); }
+    .cmd .flag { color: var(--yellow); }
+    .warning { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .warning::before { content: '⚠️ '; }
+    .info { background: rgba(124,106,247,0.08); border: 1px solid rgba(124,106,247,0.3); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .info::before { content: 'ℹ️ '; }
+    .step { display: flex; gap: 16px; margin: 20px 0; }
+    .step-num { flex-shrink: 0; width: 32px; height: 32px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .step-content { flex: 1; }
+    footer { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 60px; }
+  </style>
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="../index.html">首頁</a></li>
+    <li><a href="../cpa/index.html">CPA 安裝</a></li>
+    <li><a href="index.html" class="active">FearW 安裝</a></li>
+    <li><a href="../telegram/index.html">Telegram 接入</a></li>
+    <li><a href="../advanced/index.html">進階設定</a></li>
+  </ul>
+</nav>
+<main>
+
+<h1>FearW 安裝</h1>
+<p class="info">FearW 是 Hermés Agent 的 Fork，專為 CPA 架構設計。它本身不連接 AI Provider，所有流量都經過 CPA。</p>
+
+<h2>1. Clone 倉庫</h2>
+
+<div class="card">
+  <h3>下載 FearW</h3>
+  <div class="cmd">git clone https://github.com/whypuss/hermes-agent-fearw.git ~/.hermes/hermes-agent-fearw</div>
+</div>
+
+<h2>2. 建立虛擬環境</h2>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <h3>建立 venv</h3>
+    <div class="cmd">cd ~/.hermes/hermes-agent-fearw
+python3 -m venv .venv</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <h3>啟動 venv（每次操作前都要執行）</h3>
+    <div class="cmd">source .venv/bin/activate</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <h3>安裝依賴</h3>
+    <div class="cmd">pip install -e .</div>
+    <p class="info">這會安裝 FearW 到 venv，並安裝所有必需的依賴。</p>
+  </div>
+</div>
+
+<h2>3. Profile 初始化</h2>
+
+<div class="card">
+  <h3>創建 Profile</h3>
+  <div class="cmd">hermes init --profile fearw</div>
+  <p>這會在 <code>~/.hermes/</code> 創建一個名為 <code>fearw</code> 的 Profile 配置目錄。</p>
+</div>
+
+<div class="card">
+  <h3>配置 Model（CPA 路由）</h3>
+  <p>編輯 <code>~/.hermes/profiles/fearw/config.yaml</code>：</p>
+  <div class="cmd">model:
+  default: <span class="var">"MiniMax-M2.7"</span>  <span class="comment"># 預設模型</span>
+  provider: <span class="var">"cliproxyapi"</span>
+  base_url: <span class="var">"http://127.0.0.1:8080/v1"</span>
+
+<span class="comment"># CPA API Key（用來連接本地 CPA）</span>
+providers:
+  cliproxyapi:
+    api_key: <span class="var">"fearw123"</span>  <span class="comment"># 你的 CPA 密碼</span>
+
+dashboard:
+  port: <span class="var">9120</span>  <span class="comment"># 避開原版 Hermés 端口</span>
+  password: <span class="var">"fearw123"</span>
+  cpa_api_proxy: <span class="flag">true</span>
+  public: <span class="flag">true</span>  <span class="comment"># 允許外部訪問（可選）</span></div>
+</div>
+
+<h2>4. 同時運行原版 Hermés 和 FearW</h2>
+
+<div class="card">
+  <p>兩者可以同時運行，端口互不衝突：</p>
+  <div class="cmd"><span class="comment"># 原版 Hermés</span>
+hermes agent run --port 8765
+
+<span class="comment"># FearW</span>
+cd ~/.hermes/hermes-agent-fearw && source .venv/bin/activate
+hermes -p fearw agent run</div>
+</div>
+
+<h2>5. Dashboard 模式（可選）</h2>
+
+<div class="card">
+  <h3>啟動 FearW Dashboard</h3>
+  <div class="cmd">cd ~/.hermes/hermes-agent-fearw && source .venv/bin/activate
+hermes -p fearw dashboard --port 9120 --public --password fearw123 --cpa-api-proxy --no-open</div>
+  <ul>
+    <li><code>--port 9120</code>：Dashboard 端口（避開 8765/9119）</li>
+    <li><code>--public</code>：允許外部網絡訪問</li>
+    <li><code>--cpa-api-proxy</code>：開啟 CPA 代理功能</li>
+    <li><code>--no-open</code>：不自動打開瀏覽器</li>
+  </ul>
+  <div class="cmd"><span class="comment"># 訪問 Dashboard</span>
+http://localhost:9120</div>
+</div>
+
+<h2>6. 驗證安裝</h2>
+
+<div class="card">
+  <h3>Doctor 檢查</h3>
+  <div class="cmd">cd ~/.hermes/hermes-agent-fearw && source .venv/bin/activate
+hermes -p fearw doctor</div>
+</div>
+
+<div class="card">
+  <h3>測試 CPA 連接</h3>
+  <div class="cmd">curl http://127.0.0.1:8080/v1/models \
+  -H "Authorization: Bearer 你的CPA密碼"</div>
+  <p>正常情況下返回可用模型列表。</p>
+</div>
+
+<h2>7. 升級 FearW</h2>
+
+<div class="cmd">cd ~/.hermes/hermes-agent-fearw && git pull</div>
+
+</main>
+<footer><p>FearW Hermés Agent 安裝指南</p></footer>
+</body>
+</html>

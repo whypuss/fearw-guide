@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPA 安裝與配置 — FearW 指南</title>
+  <style>
+    :root { --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3a; --accent: #7c6af7; --accent2: #f7a86a; --text: #e4e4e7; --muted: #71717a; --green: #4ade80; --red: #f87171; --yellow: #fbbf24; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; position: sticky; top: 0; z-index: 100; }
+    nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0; max-width: 900px; margin: 0 auto; }
+    nav li a { display: block; padding: 14px 18px; color: var(--muted); font-size: 0.9rem; }
+    nav li a:hover, nav li a.active { color: var(--text); text-decoration: none; }
+    nav li a.active { border-bottom: 2px solid var(--accent); }
+    main { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    h2 { font-size: 1.6rem; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 1.2rem; margin: 24px 0 10px; color: var(--accent2); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 20px 0; }
+    .card h3 { margin-top: 0; }
+    .cmd { background: #0a0a0f; border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; font-family: 'Fira Code', monospace; font-size: 0.88rem; overflow-x: auto; margin: 12px 0; color: var(--green); }
+    .cmd .comment { color: var(--muted); }
+    .cmd .var { color: var(--accent2); }
+    .cmd .flag { color: var(--yellow); }
+    .warning { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .warning::before { content: '⚠️ '; }
+    .info { background: rgba(124,106,247,0.08); border: 1px solid rgba(124,106,247,0.3); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .info::before { content: 'ℹ️ '; }
+    .step { display: flex; gap: 16px; margin: 20px 0; }
+    .step-num { flex-shrink: 0; width: 32px; height: 32px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .step-content { flex: 1; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    th, td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--surface); color: var(--accent2); }
+    footer { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 60px; }
+  </style>
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="../index.html">首頁</a></li>
+    <li><a href="index.html" class="active">CPA 安裝</a></li>
+    <li><a href="../setup/index.html">FearW 安裝</a></li>
+    <li><a href="../telegram/index.html">Telegram 接入</a></li>
+    <li><a href="../advanced/index.html">進階設定</a></li>
+  </ul>
+</nav>
+<main>
+
+<h1>CPA 安裝與配置</h1>
+<p class="info">CPA（CLIProxyAPI）是 FearW 的核心——所有 AI 流量都經過它。它是一個獨立的 OpenAI-compatible proxy 伺服器，支援多個 Provider、多個 API Key、管理介面、流量監控。</p>
+
+<h2>1. 安裝 CLIProxyAPI</h2>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <h3>確認 Python 環境</h3>
+    <div class="cmd">python3 --version  <span class="comment"># 需要 3.9+</span></div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <h3>使用 pip 安裝</h3>
+    <div class="cmd">pip install cli-proxy-api  <span class="comment"># 或</span>
+pip3 install cli-proxy-api</div>
+    <p>或者用独立二进制（推薦）：</p>
+    <div class="cmd">brew install cli-proxy-api  <span class="comment"># macOS</span></div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <h3>驗證安裝</h3>
+    <div class="cmd">cli-proxy-api --version</div>
+  </div>
+</div>
+
+<h2>2. 配置文件</h2>
+
+<div class="card">
+  <h3>config.yaml 位置</h3>
+  <p>CPA 會在以下順序查找配置：</p>
+  <ol>
+    <li><code>./config.yaml</code>（當前目錄）</li>
+    <li><code>~/.cli-proxy-api/config.yaml</code></li>
+    <li><code>/etc/cli-proxy-api/config.yaml</code></li>
+  </ol>
+  <p class="info">建議放在 <code>~/.cli-proxy-api/config.yaml</code></p>
+</div>
+
+<div class="card">
+  <h3>最小配置示例</h3>
+  <div class="cmd">host: <span class="var">"127.0.0.1"</span>
+port: <span class="var">8080</span>
+api-keys:
+  - <span class="var">"你的 CPA 密碼"</span>
+debug: <span class="flag">false</span>
+openai-compatibility:
+  - name: <span class="var">"openrouter"</span>
+    disabled: <span class="flag">false</span>
+    base-url: <span class="var">"https://openrouter.ai/api/v1"</span>
+    api-key-entries:
+      - api-key: <span class="var">"sk-or-你的key"</span>
+    models:
+      - name: <span class="var">"openrouter/free"</span>
+        alias: <span class="var">"free"</span></div>
+  <p class="warning">真實 API Key 不要寫在 config.yaml 裡。放到 auth-dir 目錄（見下方）。</p>
+</div>
+
+<h2>3. API Key 管理（安全方式）</h2>
+
+<div class="card">
+  <h3>auth-dir 目錄</h3>
+  <p>預設 <code>~/.cli-proxy-api/</code>。在 config.yaml 指定：</p>
+  <div class="cmd">auth-dir: <span class="var">"~/.cli-proxy-api"</span></div>
+</div>
+
+<div class="card">
+  <h3>認證文件格式</h3>
+  <p>在 auth-dir 裡，每個 Provider 建一個目錄，例如：</p>
+  <div class="cmd">~/.cli-proxy-api/openrouter/
+  keys/
+    key_001.txt   <span class="comment"># 內容：sk-or-v1-xxxxx</span>
+    key_002.txt   <span class="comment"># 內容：sk-or-v1-yyyyy</span></div>
+  <p>或者用 JSON 格式（可在管理介面編輯）：</p>
+  <div class="cmd">~/.cli-proxy-api/openrouter/keys.json
+{
+  "keys": [
+    { "key": "sk-or-v1-xxxxx", "label": "我的 OpenRouter Key" }
+  ]
+}</div>
+</div>
+
+<h2>4. 啟動 CPA</h2>
+
+<div class="card">
+  <h3>前台運行（調試用）</h3>
+  <div class="cmd">cli-proxy-api --config ~/.cli-proxy-api/config.yaml</div>
+</div>
+
+<div class="card">
+  <h3>後台運行（生産用）</h3>
+  <div class="cmd">nohup cli-proxy-api --config ~/.cli-proxy-api/config.yaml \
+  >> ~/.cli-proxy-api/cpa.log 2>&1 &
+<span class="comment"># 或使用 launchd / systemd 管理</span></div>
+</div>
+
+<h2>5. 管理介面</h2>
+
+<div class="card">
+  <h3>本地訪問</h3>
+  <div class="cmd">http://127.0.0.1:8080/management</div>
+  <p>認證方式：HTTP Basic Auth，用 config.yaml 裡的任意 api-key。</p>
+</div>
+
+<div class="card">
+  <h3>功能概覽</h3>
+  <ul>
+    <li>新增 / 刪除 API Key</li>
+    <li>選擇模型（Model Picker）</li>
+    <li>測試 API 連線</li>
+    <li>流量監控</li>
+    <li>上 / 下游配置</li>
+  </ul>
+</div>
+
+<h2>6. Provider 設定</h2>
+
+<table>
+  <tr><th>Provider</th><th>base-url</th><th>說明</th></tr>
+  <tr><td>OpenRouter</td><td><code>https://openrouter.ai/api/v1</code></td><td>包含 FreeRouter（免費模型）</td></tr>
+  <tr><td>MiniMax</td><td><code>https://api.minimax.chat/v1</code></td><td>需設置 API Key</td></tr>
+  <tr><td>OpenAI</td><td><code>https://api.openai.com/v1</code></td><td>官方</td></tr>
+  <tr><td>自定義</td><td>任意</td><td>任何 OpenAI-compatible 端點</td></tr>
+</table>
+
+<div class="card">
+  <h3>FreeRouter（免費模型）</h3>
+  <p>OpenRouter 提供 <code>openrouter/free</code> 模型，會自動路由到最便宜的免費模型。使用方式：</p>
+  <div class="cmd"><span class="comment"># 在 CPA config 加入</span>
+models:
+  - name: <span class="var">"openrouter/free"</span>
+    alias: <span class="var">"free"</span>
+
+<span class="comment"># 在 FearW 或任何客戶端使用</span>
+model: <span class="var">free</span></div>
+</div>
+
+<h2>7. 測試 CPA 是否正常</h2>
+
+<div class="card">
+  <h3>API 端點測試</h3>
+  <div class="cmd">curl http://127.0.0.1:8080/</div>
+  <p>正常返回：</p>
+  <div class="cmd">{"endpoints":["POST /v1/chat/completions","POST /v1/completions","GET /v1/models"],"message":"CLI Proxy API Server"}</div>
+</div>
+
+<div class="card">
+  <h3>模型列表測試</h3>
+  <div class="cmd">curl http://127.0.0.1:8080/v1/models \
+  -H <span class="var">"Authorization: Bearer 你的CPA密碼"</span></div>
+</div>
+
+</main>
+<footer><p>FearW Hermés Agent 安裝指南</p></footer>
+</body>
+</html>

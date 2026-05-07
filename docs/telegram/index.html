@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram 接入 — FearW 指南</title>
+  <style>
+    :root { --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3a; --accent: #7c6af7; --accent2: #f7a86a; --text: #e4e4e7; --muted: #71717a; --green: #4ade80; --red: #f87171; --yellow: #fbbf24; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; position: sticky; top: 0; z-index: 100; }
+    nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0; max-width: 900px; margin: 0 auto; }
+    nav li a { display: block; padding: 14px 18px; color: var(--muted); font-size: 0.9rem; }
+    nav li a:hover, nav li a.active { color: var(--text); text-decoration: none; }
+    nav li a.active { border-bottom: 2px solid var(--accent); }
+    main { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    h2 { font-size: 1.6rem; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 1.2rem; margin: 24px 0 10px; color: var(--accent2); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 20px 0; }
+    .card h3 { margin-top: 0; }
+    .cmd { background: #0a0a0f; border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; font-family: 'Fira Code', monospace; font-size: 0.88rem; overflow-x: auto; margin: 12px 0; color: var(--green); white-space: pre; }
+    .cmd .comment { color: var(--muted); }
+    .cmd .var { color: var(--accent2); }
+    .cmd .flag { color: var(--yellow); }
+    .warning { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .warning::before { content: '⚠️ '; }
+    .info { background: rgba(124,106,247,0.08); border: 1px solid rgba(124,106,247,0.3); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .info::before { content: 'ℹ️ '; }
+    .step { display: flex; gap: 16px; margin: 20px 0; }
+    .step-num { flex-shrink: 0; width: 32px; height: 32px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .step-content { flex: 1; }
+    footer { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 60px; }
+  </style>
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="../index.html">首頁</a></li>
+    <li><a href="../cpa/index.html">CPA 安裝</a></li>
+    <li><a href="../setup/index.html">FearW 安裝</a></li>
+    <li><a href="index.html" class="active">Telegram 接入</a></li>
+    <li><a href="../advanced/index.html">進階設定</a></li>
+  </ul>
+</nav>
+<main>
+
+<h1>Telegram 接入</h1>
+<p class="info">FearW Gateway 支持 Telegram。配置完成後，可以直接在 Telegram 裡和 FearW 對話。</p>
+
+<h2>1. 創建 Telegram Bot</h2>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <h3>找 @BotFather</h3>
+    <p>在 Telegram 搜索 <code>@BotFather</code>，發送：</p>
+    <div class="cmd">/newbot</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <h3>設定 Bot 名稱</h3>
+    <p>按提示輸入 Bot 名稱和 username。</p>
+    <p class="info">BotFather 會給你一個 <strong>Bot Token</strong>，格式如：<code>123456789:ABCdefGHIjklMNOpqrsTUVwxyz</code></p>
+    <p class="warning">這個 Token 是敏感資料，請妥善保管，不要上傳到 GitHub。</p>
+  </div>
+</div>
+
+<h2>2. 配置 FearW Telegram Gateway</h2>
+
+<div class="card">
+  <h3>在 Profile 配置中加入 Telegram</h3>
+  <p>編輯 <code>~/.hermes/profiles/fearw/config.yaml</code>：</p>
+  <div class="cmd">platforms:
+  telegram:
+    enabled: <span class="flag">true</span>
+    bot_token: <span class="var">"你的BotToken"</span>
+    admin_ids:
+      - <span class="var">你的TelegramUserID</span>  <span class="comment"># 管理員，可以執行 /model 等命令</span>
+    allowed_chats: []  <span class="comment"># 空 = 所有人均可使用；或填寫允許的 chat_id</span></div>
+</div>
+
+<div class="card">
+  <h3>如何獲得自己的 Telegram User ID？</h3>
+  <p>搜索 <code>@userinfobot</code> 或 <code>@getidsbot</code>，發送任意消息，它會返回你的 User ID。</p>
+</div>
+
+<h2>3. 啟動 FearW 並開啟 Gateway</h2>
+
+<div class="card">
+  <h3>完整啟動命令</h3>
+  <div class="cmd">cd ~/.hermes/hermes-agent-fearw && source .venv/bin/activate
+hermes -p fearw gateway run</div>
+  <p class="info">這會啟動 FearW Gateway，監聽所有配置好的平台（包括 Telegram）。</p>
+</div>
+
+<div class="card">
+  <h3>只測試 Telegram（不啟動其他平台）</h3>
+  <p>可以在 config.yaml 裡只啟用 Telegram，其他平台維持關閉。</p>
+</div>
+
+<h2>4. 在 Telegram 裡測試</h2>
+
+<ol>
+  <li>在 Telegram 找到你的 Bot（用 username 搜索）</li>
+  <li>發送 <code>/start</code></li>
+  <li>發送 <code>/help</code> 查看可用命令</li>
+  <li>直接發送消息開始對話</li>
+</ol>
+
+<h2>5. 常用 / 命令</h2>
+
+<table>
+  <tr><th>命令</th><th>說明</th></tr>
+  <tr><td><code>/start</code></td><td>開始對話</td></tr>
+  <tr><td><code>/help</code></td><td>顯示幫助</td></tr>
+  <tr><td><code>/model</code></td><td>切換模型</td></tr>
+  <tr><td><code>/sessions</code></td><td>查看 / 管理對話歷史</td></tr>
+  <tr><td><code>/tools</code></td><td>查看可用工具</td></tr>
+  <tr><td><code>/memory</code></td><td>查看記憶狀態</td></tr>
+</table>
+
+<h2>6. 進階配置</h2>
+
+<div class="card">
+  <h3>限定只有自己能使用</h3>
+  <div class="cmd">platforms:
+  telegram:
+    enabled: <span class="flag">true</span>
+    bot_token: <span class="var">"你的BotToken"</span>
+    admin_ids:
+      - <span class="var">你的TelegramUserID</span>
+    allowed_chats:
+      - <span class="var">你的TelegramChatID</span>  <span class="comment"># 群組的 chat_id，或 DM 的 chat_id</span></div>
+</div>
+
+<div class="card">
+  <h3>開機自動啟動（macOS launchd）</h3>
+  <p>創建 <code>~/Library/LaunchAgents/com.hermes.fearw.plist</code>：</p>
+  <div class="cmd">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+  &lt;key&gt;Label&lt;/key&gt;&lt;string&gt;com.hermes.fearw&lt;/string&gt;
+  &lt;key&gt;ProgramArguments&lt;/key&gt;
+  &lt;array&gt;
+    &lt;string&gt;/Users/你的用戶名/.hermes/hermes-agent-fearw/.venv/bin/hermes&lt;/string&gt;
+    &lt;string&gt;-p&lt;/string&gt;
+    &lt;string&gt;fearw&lt;/string&gt;
+    &lt;string&gt;gateway&lt;/string&gt;
+    &lt;string&gt;run&lt;/string&gt;
+  &lt;/array&gt;
+  &lt;key&gt;RunAtLoad&lt;/key&gt;&lt;true/&gt;
+  &lt;key&gt;WorkingDirectory&lt;/key&gt;&lt;string&gt;/Users/你的用戶名/.hermes/hermes-agent-fearw&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</div>
+  <p class="warning">請把 <code>你的用戶名</code> 替換為實際的 macOS 用戶名。</p>
+</div>
+
+</main>
+<footer><p>FearW Hermés Agent 安裝指南</p></footer>
+</body>
+</html>

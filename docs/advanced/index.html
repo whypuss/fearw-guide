@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>進階設定 — FearW 指南</title>
+  <style>
+    :root { --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3a; --accent: #7c6af7; --accent2: #f7a86a; --text: #e4e4e7; --muted: #71717a; --green: #4ade80; --red: #f87171; --yellow: #fbbf24; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; position: sticky; top: 0; z-index: 100; }
+    nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0; max-width: 900px; margin: 0 auto; }
+    nav li a { display: block; padding: 14px 18px; color: var(--muted); font-size: 0.9rem; }
+    nav li a:hover, nav li a.active { color: var(--text); text-decoration: none; }
+    nav li a.active { border-bottom: 2px solid var(--accent); }
+    main { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    h2 { font-size: 1.6rem; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 1.2rem; margin: 24px 0 10px; color: var(--accent2); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 20px 0; }
+    .card h3 { margin-top: 0; }
+    .cmd { background: #0a0a0f; border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; font-family: 'Fira Code', monospace; font-size: 0.88rem; overflow-x: auto; margin: 12px 0; color: var(--green); white-space: pre; }
+    .cmd .comment { color: var(--muted); }
+    .cmd .var { color: var(--accent2); }
+    .cmd .flag { color: var(--yellow); }
+    .warning { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .warning::before { content: '⚠️ '; }
+    .info { background: rgba(124,106,247,0.08); border: 1px solid rgba(124,106,247,0.3); border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .info::before { content: 'ℹ️ '; }
+    .step { display: flex; gap: 16px; margin: 20px 0; }
+    .step-num { flex-shrink: 0; width: 32px; height: 32px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .step-content { flex: 1; }
+    footer { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 60px; }
+  </style>
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="../index.html">首頁</a></li>
+    <li><a href="../cpa/index.html">CPA 安裝</a></li>
+    <li><a href="../setup/index.html">FearW 安裝</a></li>
+    <li><a href="../telegram/index.html">Telegram 接入</a></li>
+    <li><a href="index.html" class="active">進階設定</a></li>
+  </ul>
+</nav>
+<main>
+
+<h1>進階設定</h1>
+
+<h2>1. 使用非原版端口</h2>
+
+<div class="card">
+  <h3>為什麼需要非原版端口？</h3>
+  <p>原版 Hermés Agent 默認使用 port 8765。FearW 和原版同時運行時，必須使用不同端口。</p>
+</div>
+
+<div class="card">
+  <h3>指定端口的方法</h3>
+  <div class="cmd"><span class="comment"># 方法一：啟動時指定端口</span>
+hermes -p fearw gateway run --port <span class="var">9120</span>
+
+<span class="comment"># 方法二：在 config.yaml 設定</span>
+gateway:
+  port: <span class="var">9120</span>
+  host: <span class="var">"0.0.0.0"</span>  <span class="comment"># 允許外部訪問</span></div>
+</div>
+
+<div class="card">
+  <h3>Dashboard 端口</h3>
+  <div class="cmd">hermes -p fearw dashboard --port <span class="var">9121</span> --password fearw123</div>
+</div>
+
+<h2>2. 終端命令 /fearw（Shell Alias）</h2>
+
+<div class="card">
+  <h3>macOS Zsh — 添加 Alias</h3>
+  <p>編輯 <code>~/.zshrc</code>：</p>
+  <div class="cmd">echo 'alias fearw="cd ~/.hermes/hermes-agent-fearw && source .venv/bin/activate && hermes -p fearw"' >> ~/.zshrc
+source ~/.zshrc</div>
+  <p>之後在終端直接輸入 <code>fearw</code> 即可激活 FearW。</p>
+</div>
+
+<div class="card">
+  <h3>用 fearw 快速啟動各模式</h3>
+  <div class="cmd"><span class="comment"># 激活後</span>
+fearw agent run     <span class="comment"># 啟動 Agent</span>
+fearw gateway run   <span class="comment"># 啟動 Gateway</span>
+fearw dashboard     <span class="comment"># 啟動 Dashboard</span>
+fearw chat          <span class="comment"># 啟動 Chat 模式</span></div>
+</div>
+
+<h2>3. 多 Profile 管理</h2>
+
+<div class="card">
+  <h3>創建新 Profile</h3>
+  <div class="cmd">hermes init --profile <span class="var">myprofile</span></div>
+</div>
+
+<div class="card">
+  <h3>Profile 目錄結構</h3>
+  <div class="cmd">~/.hermes/
+  profiles/
+    fearw/
+      config.yaml   <span class="comment"># FearW 配置</span>
+    myprofile/
+      config.yaml   <span class="comment"># 另一個配置</span></div>
+</div>
+
+<div class="card">
+  <h3>切換 Profile</h3>
+  <div class="cmd">hermes -p <span class="var">myprofile</span> agent run</div>
+</div>
+
+<h2>4. FreeRouter（OpenRouter 免費模型）</h2>
+
+<div class="card">
+  <h3>什麼是 FreeRouter？</h3>
+  <p><code>openrouter/free</code> 是 OpenRouter 提供的特殊模型，會自動將請求路由到當前最便宜的免費或 deep-discount 模型。</p>
+  <p class="info">實測會路由到 <code>minimax/minimax-m2.5:free</code> 等模型。</p>
+</div>
+
+<div class="card">
+  <h3>在 CPA config 加入</h3>
+  <div class="cmd">openai-compatibility:
+  - name: <span class="var">"openrouter"</span>
+    base-url: <span class="var">"https://openrouter.ai/api/v1"</span>
+    api-key-entries:
+      - api-key: <span class="var">"sk-or-v1-你的OpenRouterKey"</span>
+    models:
+      - name: <span class="var">"openrouter/free"</span>
+        alias: <span class="var">"free"</span></div>
+</div>
+
+<div class="card">
+  <h3>在 FearW 使用</h3>
+  <div class="cmd">model:
+  default: <span class="var">"free"</span></div>
+</div>
+
+<h2>5. 同時運行多個 Hermés 實例</h2>
+
+<div class="card">
+  <h3>端口分配建議</h3>
+  <table>
+    <tr><th>實例</th><th>Gateway Port</th><th>Dashboard Port</th><th>CPA Port</th></tr>
+    <tr><td>原版 Hermés</td><td>8765</td><td>9119</td><td>—</td></tr>
+    <tr><td>FearW</td><td>9120</td><td>9121</td><td>8080</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>後台啟動 FearW</h3>
+  <div class="cmd">nohup bash -c 'cd ~/.hermes/hermes-agent-fearw && source .venv/bin/activate && hermes -p fearw gateway run' \
+  >> ~/.hermes/fearw-gateway.log 2>&1 &</div>
+</div>
+
+<h2>6. 日誌查看</h2>
+
+<div class="cmd"><span class="comment"># CPA 日誌</span>
+tail -f ~/.cli-proxy-api/cpa.log
+
+<span class="comment"># FearW Gateway 日誌</span>
+tail -f ~/.hermes/fearw-gateway.log
+
+<span class="comment"># Hermés 全域日誌</span>
+tail -f ~/.hermes/logs/gateway.log</div>
+
+<h2>7. 常見問題排查</h2>
+
+<div class="card">
+  <h3>CPA 連接失敗</h3>
+  <ol>
+    <li>確認 CPA 正在運行：<code>ps aux | grep cli-proxy</code></li>
+    <li>確認端口：<code>lsof -i :8080</code></li>
+    <li>測試本地：<code>curl http://127.0.0.1:8080/</code></li>
+  </ol>
+</div>
+
+<div class="card">
+  <h3>Telegram Bot 沒反應</h3>
+  <ol>
+    <li>檢查 Bot Token 是否正確</li>
+    <li>確認 Gateway 已啟動並監聽</li>
+    <li>檢查 <code>admin_ids</code> 是否包含你的 User ID</li>
+    <li>查看日誌確認 Telegram 平台已加載</li>
+  </ol>
+</div>
+
+<div class="card">
+  <h3>模型返回錯誤</h3>
+  <ol>
+    <li>檢查 CPA 的 API Key 是否有效</li>
+    <li>確認 CPA config 裡的模型名稱正確</li>
+    <li>在 CPA 管理介面測試該模型</li>
+  </ol>
+</div>
+
+</main>
+<footer><p>FearW Hermés Agent 安裝指南</p></footer>
+</body>
+</html>
