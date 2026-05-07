@@ -98,18 +98,29 @@ pip3 install cli-proxy-api</div>
   <div class="cmd">host: <span class="var">"127.0.0.1"</span>
 port: <span class="var">8080</span>
 api-keys:
-  - <span class="var">"你的 CPA 密碼"</span>
+  - <span class="var">"fearw123"</span>          <span class="comment"># CPA 本地訪問密碼</span>
 debug: <span class="flag">false</span>
+
+<span class="comment"># OpenRouter + FreeRouter（推薦，完全免費）</span>
 openai-compatibility:
   - name: <span class="var">"openrouter"</span>
-    disabled: <span class="flag">false</span>
     base-url: <span class="var">"https://openrouter.ai/api/v1"</span>
     api-key-entries:
-      - api-key: <span class="var">"sk-or-你的key"</span>
+      - api-key: <span class="var">"sk-or-v1-你的OpenRouterKey"</span>
     models:
       - name: <span class="var">"openrouter/free"</span>
         alias: <span class="var">"free"</span></div>
-  <p class="warning">真實 API Key 不要寫在 config.yaml 裡。放到 auth-dir 目錄（見下方）。</p>
+  <p class="warning">真實 API Key 建議員放在 auth-dir 目錄（見下方），不要直接寫在 config.yaml。</p>
+</div>
+
+<div class="card">
+  <h3>快速開始：OpenRouter + FreeRouter（推薦）</h3>
+  <p>OpenRouter 提供每月 <strong>$1 免費 Credit</strong>，配合 <code>openrouter/free</code> 模型，可以完全免費使用。</p>
+  <ol>
+    <li>到 <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> 申請 API Key</li>
+    <li>在 CPA config 加入 OpenRouter provider（如下方完整示例）</li>
+    <li>FearW 設定 <code>model: free</code> 即可</li>
+  </ol>
 </div>
 
 <h2>3. API Key 管理（安全方式）</h2>
@@ -174,7 +185,6 @@ openai-compatibility:
 <table>
   <tr><th>Provider</th><th>base-url</th><th>說明</th></tr>
   <tr><td>OpenRouter</td><td><code>https://openrouter.ai/api/v1</code></td><td>包含 FreeRouter（免費模型）</td></tr>
-  <tr><td>MiniMax</td><td><code>https://api.minimax.chat/v1</code></td><td>需設置 API Key</td></tr>
   <tr><td>OpenAI</td><td><code>https://api.openai.com/v1</code></td><td>官方</td></tr>
   <tr><td>自定義</td><td>任意</td><td>任何 OpenAI-compatible 端點</td></tr>
 </table>
